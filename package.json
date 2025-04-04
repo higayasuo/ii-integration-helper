@@ -1,0 +1,45 @@
+{
+  "name": "ii-integration-helper",
+  "version": "1.0.0",
+  "description": "This project provides helpers for the ii-integration web application.",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "test": "vitest --run",
+    "test:coverage": "vitest run --coverage",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/higayasuo/ii-integration-helper.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/higayasuo/ii-integration-helper/issues"
+  },
+  "homepage": "https://github.com/higayasuo/ii-integration-helper#readme",
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.8.2",
+    "vite": "^6.2.5",
+    "vite-plugin-dts": "^3.7.3",
+    "vitest": "^3.1.1"
+  }
+}

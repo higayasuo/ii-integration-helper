@@ -1,0 +1,30 @@
+# Source
+src/
+__tests__/
+
+# Config files
+.gitignore
+.npmignore
+tsconfig.json
+vite.config.ts
+vitest.config.ts
+
+# Development
+node_modules/
+coverage/
+*.log
+.env*
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Keep only the necessary files
+!dist/
+!README.md
+!LICENSE
+
+# npm pack
+*.tgz
