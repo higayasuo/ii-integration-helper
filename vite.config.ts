@@ -10,9 +10,13 @@ export default defineConfig({
       fileName: (format) => `index.${format === 'es' ? 'js' : 'cjs'}`,
     },
     rollupOptions: {
-      external: [],
+      external: ['@dfinity/agent', '@dfinity/identity', '@dfinity/auth-client'],
       output: {
-        globals: {},
+        globals: {
+          '@dfinity/agent': 'agent',
+          '@dfinity/identity': 'identity',
+          '@dfinity/auth-client': 'authClient',
+        },
       },
     },
   },
