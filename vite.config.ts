@@ -6,19 +6,27 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
-      name: 'IIIntegrationHelper',
-      fileName: (format) => `index.${format === 'es' ? 'js' : 'cjs'}`,
+      name: 'ii-integration-helper',
+      fileName: 'index',
+      formats: ['es', 'cjs'],
     },
     rollupOptions: {
       external: ['@dfinity/agent', '@dfinity/identity', '@dfinity/auth-client'],
       output: {
         globals: {
-          '@dfinity/agent': 'agent',
-          '@dfinity/identity': 'identity',
-          '@dfinity/auth-client': 'authClient',
+          '@dfinity/agent': 'dfinityAgent',
+          '@dfinity/identity': 'dfinityIdentity',
+          '@dfinity/auth-client': 'dfinityAuthClient',
         },
       },
     },
   },
-  plugins: [dts()],
+  plugins: [
+    dts({
+      include: ['src'],
+      exclude: ['src/**/*.spec.ts'],
+      rollupTypes: true,
+      copyDtsFiles: false,
+    }),
+  ],
 });
