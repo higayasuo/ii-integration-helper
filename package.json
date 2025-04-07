@@ -1,7 +1,7 @@
 {
   "name": "ii-integration-helper",
   "version": "1.0.0",
-  "description": "This project provides helpers for the ii-integration web application.",
+  "description": "A TypeScript library that provides helper functions for implementing the Proxy Web App component of Internet Identity (II) integration for mobile applications.",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -27,7 +27,17 @@
     "type": "git",
     "url": "git+https://github.com/higayasuo/ii-integration-helper.git"
   },
-  "keywords": [],
+  "keywords": [
+    "internet-identity",
+    "internet-computer",
+    "dfinity",
+    "icp",
+    "authentication",
+    "mobile",
+    "proxy",
+    "delegation",
+    "typescript"
+  ],
   "author": "",
   "license": "MIT",
   "bugs": {
