@@ -33,6 +33,11 @@ export const handleNativeAppDelegation = ({
 
   // Add click event listener to the Back to App button
   backToAppButton.addEventListener('click', () => {
+    // Add loading effect
+    backToAppButton.textContent = 'Processing...';
+    backToAppButton.style.opacity = '0.7';
+    backToAppButton.style.cursor = 'wait';
+
     window.open(`${deepLink}#${uriFragment}`, '_self');
   });
 };

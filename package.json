@@ -1,15 +1,15 @@
 {
   "name": "ii-integration-helper",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A TypeScript library that provides helper functions for implementing the Proxy Web App component of Internet Identity (II) integration for mobile applications.",
   "type": "module",
   "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
+  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
+      "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
     }
   },
@@ -18,10 +18,11 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
     "test": "vitest --run",
     "test:coverage": "vitest run --coverage",
-    "preview": "vite preview"
+    "typecheck": "tsc --noEmit",
+    "prepare": "npm run typecheck && npm run build && npm test"
   },
   "repository": {
     "type": "git",
@@ -46,7 +47,6 @@
   "homepage": "https://github.com/higayasuo/ii-integration-helper#readme",
   "devDependencies": {
     "@types/node": "^22.14.0",
-    "@vitejs/plugin-react": "^4.3.4",
     "typescript": "^5.8.2",
     "vite": "^6.2.5",
     "vite-plugin-dts": "^3.7.3",
@@ -54,10 +54,8 @@
   },
   "peerDependencies": {
     "@dfinity/agent": "*",
+    "@dfinity/auth-client": "*",
     "@dfinity/identity": "*",
-    "@dfinity/auth-client": "*"
-  },
-  "dependencies": {
     "canister-manager": "^0.1.7"
   }
 }
