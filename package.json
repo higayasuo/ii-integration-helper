@@ -1,6 +1,6 @@
 {
-  "name": "ii-integration-helper",
-  "version": "1.0.1",
+  "name": "ii-integration-helpers",
+  "version": "0.1.0",
   "description": "A TypeScript library that provides helper functions for implementing the Proxy Web App component of Internet Identity (II) integration for mobile applications.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -26,7 +26,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/higayasuo/ii-integration-helper.git"
+    "url": "git+https://github.com/higayasuo/ii-integration-helpers.git"
   },
   "keywords": [
     "internet-identity",
@@ -42,20 +42,23 @@
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/higayasuo/ii-integration-helper/issues"
+    "url": "https://github.com/higayasuo/ii-integration-helpers/issues"
   },
-  "homepage": "https://github.com/higayasuo/ii-integration-helper#readme",
+  "homepage": "https://github.com/higayasuo/ii-integration-helpers#readme",
   "devDependencies": {
     "@types/node": "^22.14.0",
+    "@vitest/coverage-v8": "^1.4.0",
+    "jsdom": "^26.1.0",
     "typescript": "^5.8.2",
     "vite": "^6.2.5",
     "vite-plugin-dts": "^3.7.3",
-    "vitest": "^3.1.1"
+    "vitest": "^3.1.2"
   },
   "peerDependencies": {
     "@dfinity/agent": "*",
     "@dfinity/auth-client": "*",
     "@dfinity/identity": "*",
-    "canister-manager": "^0.1.7"
+    "canister-manager": "^0.1.7",
+    "expo-icp-frontend-helpers": "^0.1.4"
   }
 }

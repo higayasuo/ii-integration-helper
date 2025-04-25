@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { buildParams } from '../buildParams';
 import { buildAppPublicKey } from '../buildAppPublicKey';
 import { buildIIUri } from '../buildIIUri';
-import { buildDeepLink } from '../buildDeepLink';
+import { buildDeepLink } from 'expo-icp-frontend-helpers';
 
 // Mock the helper functions
 vi.mock('../buildAppPublicKey', () => ({
@@ -13,27 +13,22 @@ vi.mock('../buildIIUri', () => ({
   buildIIUri: vi.fn(),
 }));
 
-vi.mock('../buildDeepLink', () => ({
+vi.mock('expo-icp-frontend-helpers', () => ({
   buildDeepLink: vi.fn(),
+  isDeepLinkType: (type: string) => type === 'icp',
 }));
 
 describe('buildParams', () => {
   const mockPublicKey = { toDer: vi.fn() };
   const mockIIUri = 'https://internetcomputer.org';
   const mockDeepLink = 'https://example.com';
-  const mockWindow = {
-    location: new URL(
-      'https://example.com?pubkey=test-pubkey&deep-link-type=icp',
-    ),
-  } as unknown as Window & typeof globalThis;
 
-  const defaultArgs = {
+  const defaultParams = {
     localIPAddress: '127.0.0.1',
     dfxNetwork: 'local',
     internetIdentityCanisterId: 'rdmx6-jaaaa-aaaaa-aaadq-cai',
     frontendCanisterId: 'rrkah-fqaaa-aaaaa-aaaaq-cai',
     expoScheme: 'myapp',
-    window: mockWindow,
   };
 
   beforeEach(() => {
@@ -50,10 +45,18 @@ describe('buildParams', () => {
     (buildDeepLink as unknown as ReturnType<typeof vi.fn>).mockReturnValue(
       mockDeepLink,
     );
+
+    // Mock window.location
+    Object.defineProperty(window, 'location', {
+      value: new URL(
+        'https://example.com?pubkey=test-pubkey&deep-link-type=icp',
+      ),
+      writable: true,
+    });
   });
 
   it('should successfully build params with valid query parameters', () => {
-    const result = buildParams(defaultArgs);
+    const result = buildParams(defaultParams);
 
     expect(result).toEqual({
       appPublicKey: mockPublicKey,
@@ -63,56 +66,50 @@ describe('buildParams', () => {
 
     expect(buildAppPublicKey).toHaveBeenCalledWith('test-pubkey');
     expect(buildIIUri).toHaveBeenCalledWith({
-      localIPAddress: defaultArgs.localIPAddress,
-      dfxNetwork: defaultArgs.dfxNetwork,
-      internetIdentityCanisterId: defaultArgs.internetIdentityCanisterId,
+      localIPAddress: defaultParams.localIPAddress,
+      dfxNetwork: defaultParams.dfxNetwork,
+      internetIdentityCanisterId: defaultParams.internetIdentityCanisterId,
     });
     expect(buildDeepLink).toHaveBeenCalledWith({
       deepLinkType: 'icp',
-      localIPAddress: defaultArgs.localIPAddress,
-      dfxNetwork: defaultArgs.dfxNetwork,
-      frontendCanisterId: defaultArgs.frontendCanisterId,
-      expoScheme: defaultArgs.expoScheme,
+      localIPAddress: defaultParams.localIPAddress,
+      dfxNetwork: defaultParams.dfxNetwork,
+      frontendCanisterId: defaultParams.frontendCanisterId,
+      expoScheme: defaultParams.expoScheme,
     });
   });
 
   it('should throw error when pubkey is missing', () => {
-    const args = {
-      ...defaultArgs,
-      window: {
-        location: new URL('https://example.com?deep-link-type=icp'),
-      } as unknown as Window & typeof globalThis,
-    };
+    Object.defineProperty(window, 'location', {
+      value: new URL('https://example.com?deep-link-type=icp'),
+      writable: true,
+    });
 
-    expect(() => buildParams(args)).toThrow(
+    expect(() => buildParams(defaultParams)).toThrow(
       'Missing pubkey or deep-link-type in query string',
     );
   });
 
   it('should throw error when deep-link-type is missing', () => {
-    const args = {
-      ...defaultArgs,
-      window: {
-        location: new URL('https://example.com?pubkey=test-pubkey'),
-      } as unknown as Window & typeof globalThis,
-    };
+    Object.defineProperty(window, 'location', {
+      value: new URL('https://example.com?pubkey=test-pubkey'),
+      writable: true,
+    });
 
-    expect(() => buildParams(args)).toThrow(
+    expect(() => buildParams(defaultParams)).toThrow(
       'Missing pubkey or deep-link-type in query string',
     );
   });
 
   it('should throw error when deep-link-type is invalid', () => {
-    const args = {
-      ...defaultArgs,
-      window: {
-        location: new URL(
-          'https://example.com?pubkey=test-pubkey&deep-link-type=invalid-type',
-        ),
-      } as unknown as Window & typeof globalThis,
-    };
+    Object.defineProperty(window, 'location', {
+      value: new URL(
+        'https://example.com?pubkey=test-pubkey&deep-link-type=invalid-type',
+      ),
+      writable: true,
+    });
 
-    expect(() => buildParams(args)).toThrow(
+    expect(() => buildParams(defaultParams)).toThrow(
       'Invalid deep-link-type: invalid-type',
     );
   });

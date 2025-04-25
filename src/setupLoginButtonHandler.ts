@@ -1,7 +1,7 @@
 import { PublicKey } from '@dfinity/agent';
 import { prepareLogin } from './prepareLogin';
 import { buildMiddleToAppDelegationChain } from './buildMiddleToAppDelegationChain';
-import { determineIframe } from './determineIframe';
+import { determineIframe } from 'expo-icp-frontend-helpers';
 import { sendDelegationToParent } from './sendDelegationToParent';
 import { handleNativeAppDelegation } from './handleNativeAppDelegation';
 import { renderError } from './renderError';
@@ -22,26 +22,19 @@ type SetupLoginButtonHandlerParams = {
   appPublicKey: PublicKey;
   /** The Internet Identity URI */
   iiUri: string;
-  /** The window object to use for iframe detection and delegation */
-  window: Window & typeof globalThis;
 };
 
 /**
  * Sets up the click event handler for the Internet Identity login button
  * @param params - The parameters for setting up the login button handler
  */
-export const setupLoginButtonHandler = async (
-  params: SetupLoginButtonHandlerParams,
-): Promise<void> => {
-  const {
-    iiLoginButton,
-    backToAppButton,
-    deepLink,
-    appPublicKey,
-    iiUri,
-    window,
-  } = params;
-
+export const setupLoginButtonHandler = async ({
+  iiLoginButton,
+  backToAppButton,
+  deepLink,
+  appPublicKey,
+  iiUri,
+}: SetupLoginButtonHandlerParams): Promise<void> => {
   // Prepare login outside of the event handler
   const login = await prepareLogin({
     iiUri,
@@ -62,21 +55,19 @@ export const setupLoginButtonHandler = async (
       });
 
       // Check if we're in an iframe (web browser case)
-      const isIframe = determineIframe(window);
+      const isIframe = determineIframe();
 
       if (isIframe) {
         // We're in a web browser iframe
         sendDelegationToParent({
           deepLink,
           delegationChain,
-          window,
         });
       } else {
         // We're in a native app's WebView
         handleNativeAppDelegation({
           deepLink,
           delegationChain,
-          window,
           iiLoginButton,
           backToAppButton,
         });

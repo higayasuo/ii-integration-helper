@@ -2,28 +2,30 @@ import { DelegationChain } from '@dfinity/identity';
 import { buildURIFragment } from './buildURIFragment';
 
 /**
+ * Parameters for handling native app delegation
+ */
+export type HandleNativeAppDelegationParams = {
+  /** The deep link to redirect to after processing the delegation */
+  deepLink: string;
+  /** The delegation chain to use */
+  delegationChain: DelegationChain;
+  /** The II login button element */
+  iiLoginButton: HTMLElement;
+  /** The back to app button element */
+  backToAppButton: HTMLElement;
+};
+
+/**
  * Handles delegation in a native app environment by setting up UI elements and redirecting.
  *
- * @param {Object} params - The parameters for handling native app delegation
- * @param {string} params.deepLink - The deep link to redirect to after processing the delegation
- * @param {DelegationChain} params.delegationChain - The delegation chain to use
- * @param {Window & typeof globalThis} params.window - The window object from the web environment
- * @param {HTMLElement} params.iiLoginButton - The II login button element
- * @param {HTMLElement} params.backToAppButton - The back to app button element
+ * @param {HandleNativeAppDelegationParams} params - The parameters for handling native app delegation
  */
 export const handleNativeAppDelegation = ({
   deepLink,
   delegationChain,
-  window,
   iiLoginButton,
   backToAppButton,
-}: {
-  deepLink: string;
-  delegationChain: DelegationChain;
-  window: Window & typeof globalThis;
-  iiLoginButton: HTMLElement;
-  backToAppButton: HTMLElement;
-}): void => {
+}: HandleNativeAppDelegationParams): void => {
   console.log('Native app detected, using URL redirection');
   const uriFragment = buildURIFragment(delegationChain);
 

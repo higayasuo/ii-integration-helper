@@ -1,5 +1,5 @@
 import { DelegationChain } from '@dfinity/identity';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { sendDelegationToParent } from '../sendDelegationToParent';
 import { buildDelegationString } from '../buildDelegationString';
 
@@ -9,25 +9,39 @@ vi.mock('../buildDelegationString', () => ({
 }));
 
 describe('sendDelegationToParent', () => {
+  const mockPostMessage = vi.fn();
+  const mockConsoleLog = vi.fn();
+
+  beforeEach(() => {
+    // Reset all mocks
+    vi.clearAllMocks();
+
+    // Mock window.parent.postMessage
+    Object.defineProperty(window, 'parent', {
+      value: {
+        postMessage: mockPostMessage,
+      },
+      writable: true,
+    });
+
+    // Mock console.log
+    Object.defineProperty(window, 'console', {
+      value: {
+        log: mockConsoleLog,
+      },
+      writable: true,
+    });
+  });
+
   it('should send delegation to parent window with correct message and origin', () => {
     // Setup
     const mockDeepLink = 'https://example.com/callback';
     const mockDelegationChain = {} as DelegationChain;
-    const mockPostMessage = vi.fn();
-    const mockWindow = {
-      parent: {
-        postMessage: mockPostMessage,
-      },
-      console: {
-        log: vi.fn(),
-      },
-    } as unknown as Window & typeof globalThis;
 
     // Execute
     sendDelegationToParent({
       deepLink: mockDeepLink,
       delegationChain: mockDelegationChain,
-      window: mockWindow,
     });
 
     // Verify
@@ -38,6 +52,9 @@ describe('sendDelegationToParent', () => {
         delegation: 'mocked-delegation-string',
       },
       'https://example.com',
+    );
+    expect(mockConsoleLog).toHaveBeenCalledWith(
+      'Web browser detected, using postMessage',
     );
   });
 });

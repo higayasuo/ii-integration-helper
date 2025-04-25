@@ -1,9 +1,9 @@
 import { CanisterManager } from 'canister-manager';
 
 /**
- * Arguments required to build the Internet Identity URI.
+ * Parameters required to build the Internet Identity URI.
  */
-type BuildIIUriArgs = {
+type BuildIIUriParams = {
   /**
    * The local IP address.
    */
@@ -23,14 +23,14 @@ type BuildIIUriArgs = {
 /**
  * Builds the Internet Identity URI using the CanisterManager.
  *
- * @param {BuildIIUriArgs} args - Configuration object containing necessary parameters.
+ * @param {BuildIIUriParams} args - Configuration object containing necessary parameters.
  * @returns {string} The Internet Identity URI.
  */
 export const buildIIUri = ({
   localIPAddress,
   dfxNetwork,
   internetIdentityCanisterId,
-}: BuildIIUriArgs): string => {
+}: BuildIIUriParams): string => {
   const canisterManager = new CanisterManager({
     localIPAddress,
     dfxNetwork,

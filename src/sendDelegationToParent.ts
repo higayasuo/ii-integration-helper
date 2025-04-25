@@ -2,22 +2,23 @@ import { DelegationChain } from '@dfinity/identity';
 import { buildDelegationString } from './buildDelegationString';
 
 /**
+ * Parameters for sending delegation to the parent window
+ */
+export type SendDelegationToParentParams = {
+  deepLink: string;
+  delegationChain: DelegationChain;
+};
+
+/**
  * Sends delegation information to the parent window using postMessage.
  *
- * @param {Object} params - The parameters for sending delegation
- * @param {string} params.deepLink - The deep link to redirect to after processing the delegation
- * @param {DelegationChain} params.delegationChain - The delegation chain to send
+ * @param {SendDelegationToParentParams} params - The parameters for sending delegation
  * @param {Window & typeof globalThis} params.window - The window object from the web environment
  */
 export const sendDelegationToParent = ({
   deepLink,
   delegationChain,
-  window,
-}: {
-  deepLink: string;
-  delegationChain: DelegationChain;
-  window: Window & typeof globalThis;
-}): void => {
+}: SendDelegationToParentParams): void => {
   console.log('Web browser detected, using postMessage');
   const message = {
     kind: 'success',

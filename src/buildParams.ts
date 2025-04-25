@@ -1,13 +1,16 @@
 import { PublicKey } from '@dfinity/agent';
 import { buildAppPublicKey } from './buildAppPublicKey';
 import { buildIIUri } from './buildIIUri';
-import { buildDeepLink } from './buildDeepLink';
-import { DeepLinkType, isDeepLinkType } from './DeepLinkType';
+import {
+  DeepLinkType,
+  isDeepLinkType,
+  buildDeepLink,
+} from 'expo-icp-frontend-helpers';
 
 /**
- * Arguments required to build the parameters for the application.
+ * Parameters required to build the parameters for the application.
  */
-type BuildParamsArgs = {
+type BuildParamsParams = {
   /**
    * The local IP address.
    */
@@ -32,11 +35,6 @@ type BuildParamsArgs = {
    * The Expo scheme.
    */
   expoScheme: string;
-
-  /**
-   * The global window object.
-   */
-  window: Window & typeof globalThis;
 };
 
 /**
@@ -51,7 +49,7 @@ export interface BuildParamsResult {
 /**
  * Builds the parameters required for the application.
  *
- * @param {BuildParamsArgs} args - Configuration object containing necessary parameters.
+ * @param {BuildParamsParams} params - Configuration object containing necessary parameters.
  * @returns {BuildParamsResult} The built parameters including identity, iiUri, and deepLink.
  * @throws Will throw an error if pubkey or deep-link-type is missing in query string or if deep-link-type is not a valid DeepLinkType.
  */
@@ -61,8 +59,7 @@ export const buildParams = ({
   internetIdentityCanisterId,
   frontendCanisterId,
   expoScheme,
-  window,
-}: BuildParamsArgs): BuildParamsResult => {
+}: BuildParamsParams): BuildParamsResult => {
   const searchParams = new URLSearchParams(window.location.search);
   const pubkey = searchParams.get('pubkey');
   const deepLinkType = searchParams.get('deep-link-type') as DeepLinkType;

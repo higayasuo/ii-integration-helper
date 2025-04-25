@@ -1,4 +1,4 @@
-# II Integration Helper
+# II Integration Helpers
 
 A TypeScript library that provides helper functions for implementing the Proxy Web App component of Internet Identity (II) integration for mobile applications. This library follows the secure integration pattern described in the [Internet Computer documentation](https://internetcomputer.org/docs/building-apps/security/iam#integrating-internet-identity-on-mobile-devices).
 
@@ -16,7 +16,7 @@ This approach prevents delegation theft attacks that could occur with naive impl
 ## Installation
 
 ```bash
-npm install ii-integration-helper
+npm install ii-integration-helpers
 ```
 
 ## Dependencies
@@ -26,18 +26,19 @@ npm install ii-integration-helper
 These dependencies need to be installed in your project:
 
 ```bash
-npm install @dfinity/agent @dfinity/identity @dfinity/auth-client
+npm install @dfinity/agent @dfinity/identity @dfinity/auth-client canister-manager
 ```
 
 - `@dfinity/agent`: For Internet Computer agent functionality
 - `@dfinity/identity`: For identity and delegation management
 - `@dfinity/auth-client`: For authentication client functionality
+- `canister-manager`: For canister URL management
 
 ### Regular Dependencies
 
 The following dependencies are included in the package:
 
-- `canister-manager`: For canister URL management
+- None (all dependencies are peer dependencies)
 
 ## Features
 
@@ -58,7 +59,7 @@ import {
   buildParams,
   setupLoginButtonHandler,
   prepareButtons,
-} from 'ii-integration-helper';
+} from 'ii-integration-helpers';
 
 // Build parameters for II integration
 const params = buildParams({
@@ -87,7 +88,7 @@ await setupLoginButtonHandler({
 ### Deep Linking
 
 ```typescript
-import { buildDeepLink, DeepLinkType } from 'ii-integration-helper';
+import { buildDeepLink, DeepLinkType } from 'ii-integration-helpers';
 
 // Build a deep link for different platforms
 const deepLink = buildDeepLink({
@@ -105,7 +106,7 @@ const deepLink = buildDeepLink({
 import {
   buildMiddleToAppDelegationChain,
   buildURIFragment,
-} from 'ii-integration-helper';
+} from 'ii-integration-helpers';
 
 // Build a delegation chain
 const delegationChain = await buildMiddleToAppDelegationChain({
@@ -178,3 +179,7 @@ npm run test:coverage
 ## License
 
 MIT
+
+```
+
+```
