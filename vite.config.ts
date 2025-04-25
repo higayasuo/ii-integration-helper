@@ -3,12 +3,16 @@ import { resolve } from 'path';
 import dts from 'vite-plugin-dts';
 
 export default defineConfig({
-  plugins: [dts()],
+  plugins: [
+    dts({
+      rollupTypes: true,
+    }),
+  ],
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
       name: 'ii-integration-helpers',
-      fileName: (format) => `ii-integration-helpers.${format}.js`,
+      fileName: (format) => `index.${format === 'es' ? 'mjs' : 'cjs'}`,
       formats: ['es', 'cjs'],
     },
     rollupOptions: {
@@ -17,6 +21,7 @@ export default defineConfig({
         '@dfinity/identity',
         '@dfinity/auth-client',
         'canister-manager',
+        'expo-icp-frontend-helpers',
       ],
     },
   },
