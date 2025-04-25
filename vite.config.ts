@@ -6,12 +6,14 @@ export default defineConfig({
   plugins: [
     dts({
       rollupTypes: true,
+      outDir: 'dist',
+      include: ['src'],
+      exclude: ['**/__tests__/**'],
     }),
   ],
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
-      name: 'ii-integration-helpers',
       fileName: (format) => `index.${format === 'es' ? 'mjs' : 'cjs'}`,
       formats: ['es', 'cjs'],
     },
@@ -21,7 +23,6 @@ export default defineConfig({
         '@dfinity/identity',
         '@dfinity/auth-client',
         'canister-manager',
-        'expo-icp-frontend-helpers',
       ],
     },
   },
