@@ -2,9 +2,9 @@ import { DelegationChain } from '@dfinity/identity';
 import { buildURIFragment } from './buildURIFragment';
 
 /**
- * Parameters for handling native app delegation
+ * Parameters for handling app delegation
  */
-export type HandleNativeAppDelegationParams = {
+export type HandleAppDelegationParams = {
   /** The deep link to redirect to after processing the delegation */
   deepLink: string;
   /** The delegation chain to use */
@@ -16,17 +16,16 @@ export type HandleNativeAppDelegationParams = {
 };
 
 /**
- * Handles delegation in a native app environment by setting up UI elements and redirecting.
+ * Handles delegation in a web or native app environment by setting up UI elements and redirecting.
  *
- * @param {HandleNativeAppDelegationParams} params - The parameters for handling native app delegation
+ * @param {HandleAppDelegationParams} params - The parameters for handling app delegation
  */
-export const handleNativeAppDelegation = ({
+export const handleAppDelegation = ({
   deepLink,
   delegationChain,
   iiLoginButton,
   backToAppButton,
-}: HandleNativeAppDelegationParams): void => {
-  console.log('Native app detected, using URL redirection');
+}: HandleAppDelegationParams): void => {
   const uriFragment = buildURIFragment(delegationChain);
 
   // Hide the II login button and show the Back to App button

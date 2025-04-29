@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { handleNativeAppDelegation } from '../handleNativeAppDelegation';
+import { handleAppDelegation } from '../handleAppDelegation';
 import { buildURIFragment } from '../buildURIFragment';
 import { DelegationChain } from '@dfinity/identity';
 
@@ -8,7 +8,7 @@ vi.mock('../buildURIFragment', () => ({
   buildURIFragment: vi.fn(),
 }));
 
-describe('handleNativeAppDelegation', () => {
+describe('handleAppDelegation', () => {
   const mockDelegationChain = {} as DelegationChain;
   const mockUriFragment = 'test-fragment';
   const mockDeepLink = 'https://example.com';
@@ -32,9 +32,9 @@ describe('handleNativeAppDelegation', () => {
     });
   });
 
-  it('should set up UI elements and add click event listener for native app delegation', () => {
+  it('should set up UI elements and add click event listener for app delegation', () => {
     // Call the function
-    handleNativeAppDelegation({
+    handleAppDelegation({
       deepLink: mockDeepLink,
       delegationChain: mockDelegationChain,
       iiLoginButton: mockIILoginButton,

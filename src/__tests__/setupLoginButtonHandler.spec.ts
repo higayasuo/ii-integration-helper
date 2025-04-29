@@ -4,8 +4,7 @@ import { PublicKey } from '@dfinity/agent';
 import { prepareLogin } from '../prepareLogin';
 import { buildMiddleToAppDelegationChain } from '../buildMiddleToAppDelegationChain';
 import { determineIframe } from 'expo-icp-frontend-helpers';
-import { sendDelegationToParent } from '../sendDelegationToParent';
-import { handleNativeAppDelegation } from '../handleNativeAppDelegation';
+import { handleAppDelegation } from '../handleAppDelegation';
 import { renderError } from '../renderError';
 import { formatError } from '../formatError';
 import { ERROR_MESSAGES } from '../constants';
@@ -23,12 +22,8 @@ vi.mock('expo-icp-frontend-helpers', () => ({
   determineIframe: vi.fn(),
 }));
 
-vi.mock('../sendDelegationToParent', () => ({
-  sendDelegationToParent: vi.fn(),
-}));
-
-vi.mock('../handleNativeAppDelegation', () => ({
-  handleNativeAppDelegation: vi.fn(),
+vi.mock('../handleAppDelegation', () => ({
+  handleAppDelegation: vi.fn(),
 }));
 
 vi.mock('../renderError', () => ({
@@ -95,11 +90,12 @@ describe('setupLoginButtonHandler', () => {
         appPublicKey: mockAppPublicKey,
         expiration: expect.any(Date),
       });
-      expect(sendDelegationToParent).toHaveBeenCalledWith({
+      expect(handleAppDelegation).toHaveBeenCalledWith({
         deepLink: mockDeepLink,
         delegationChain: mockDelegationChain,
+        iiLoginButton: mockIILoginButton,
+        backToAppButton: mockBackToAppButton,
       });
-      expect(handleNativeAppDelegation).not.toHaveBeenCalled();
       expect(renderError).toHaveBeenCalledWith('');
     });
   });
@@ -139,13 +135,12 @@ describe('setupLoginButtonHandler', () => {
         appPublicKey: mockAppPublicKey,
         expiration: expect.any(Date),
       });
-      expect(handleNativeAppDelegation).toHaveBeenCalledWith({
+      expect(handleAppDelegation).toHaveBeenCalledWith({
         deepLink: mockDeepLink,
         delegationChain: mockDelegationChain,
         iiLoginButton: mockIILoginButton,
         backToAppButton: mockBackToAppButton,
       });
-      expect(sendDelegationToParent).not.toHaveBeenCalled();
       expect(renderError).toHaveBeenCalledWith('');
     });
   });
@@ -187,11 +182,8 @@ describe('setupLoginButtonHandler', () => {
       // Verify that buildMiddleToAppDelegationChain was not called
       expect(buildMiddleToAppDelegationChain).not.toHaveBeenCalled();
 
-      // Verify that sendDelegationToParent was not called
-      expect(sendDelegationToParent).not.toHaveBeenCalled();
-
-      // Verify that handleNativeAppDelegation was not called
-      expect(handleNativeAppDelegation).not.toHaveBeenCalled();
+      // Verify that handleAppDelegation was not called
+      expect(handleAppDelegation).not.toHaveBeenCalled();
     });
   });
 });

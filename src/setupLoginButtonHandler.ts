@@ -1,9 +1,7 @@
 import { PublicKey } from '@dfinity/agent';
 import { prepareLogin } from './prepareLogin';
 import { buildMiddleToAppDelegationChain } from './buildMiddleToAppDelegationChain';
-import { determineIframe } from 'expo-icp-frontend-helpers';
-import { sendDelegationToParent } from './sendDelegationToParent';
-import { handleNativeAppDelegation } from './handleNativeAppDelegation';
+import { handleAppDelegation } from './handleAppDelegation';
 import { renderError } from './renderError';
 import { formatError } from './formatError';
 import { ERROR_MESSAGES } from './constants';
@@ -54,24 +52,12 @@ export const setupLoginButtonHandler = async ({
         expiration,
       });
 
-      // Check if we're in an iframe (web browser case)
-      const isIframe = determineIframe();
-
-      if (isIframe) {
-        // We're in a web browser iframe
-        sendDelegationToParent({
-          deepLink,
-          delegationChain,
-        });
-      } else {
-        // We're in a native app's WebView
-        handleNativeAppDelegation({
-          deepLink,
-          delegationChain,
-          iiLoginButton,
-          backToAppButton,
-        });
-      }
+      handleAppDelegation({
+        deepLink,
+        delegationChain,
+        iiLoginButton,
+        backToAppButton,
+      });
     } catch (error) {
       renderError(formatError(ERROR_MESSAGES.LOGIN_PROCESS, error));
     }

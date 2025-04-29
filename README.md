@@ -119,8 +119,7 @@ const uriFragment = buildURIFragment(delegationChain);
 
 ### Delegation Return Functions
 
-- `handleNativeAppDelegation`: Returns delegation chain to native app via deep link
-- `sendDelegationToParent`: Returns delegation chain to parent window via postMessage
+- `handleAppDelegation`: Returns delegation chain to the app via deep link or postMessage
 
 ### UI Functions
 
