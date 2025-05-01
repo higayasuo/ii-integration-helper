@@ -5,6 +5,7 @@ import {
   DeepLinkType,
   isDeepLinkType,
   buildDeepLink,
+  parseURL,
 } from 'expo-icp-frontend-helpers';
 
 /**
@@ -46,6 +47,11 @@ export interface BuildParamsResult {
   deepLink: string;
 }
 
+type SearchParams = {
+  pubkey?: string;
+  'deep-link-type'?: string;
+};
+
 /**
  * Builds the parameters required for the application.
  *
@@ -60,9 +66,9 @@ export const buildParams = ({
   frontendCanisterId,
   expoScheme,
 }: BuildParamsParams): BuildParamsResult => {
-  const searchParams = new URLSearchParams(window.location.search);
-  const pubkey = searchParams.get('pubkey');
-  const deepLinkType = searchParams.get('deep-link-type') as DeepLinkType;
+  const { pathname, searchParams } = parseURL<SearchParams>();
+  const pubkey = searchParams.pubkey;
+  const deepLinkType = searchParams['deep-link-type'] as DeepLinkType;
 
   if (!pubkey || !deepLinkType) {
     throw new Error('Missing pubkey or deep-link-type in query string');
@@ -85,6 +91,12 @@ export const buildParams = ({
     frontendCanisterId,
     expoScheme,
   });
+  const deepLinkURL = new URL(deepLink);
+  deepLinkURL.pathname = pathname;
 
-  return { appPublicKey, iiUri, deepLink };
+  return {
+    appPublicKey,
+    iiUri,
+    deepLink: deepLinkURL.toString(),
+  };
 };

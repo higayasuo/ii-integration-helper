@@ -26,13 +26,14 @@ npm install ii-integration-helpers
 These dependencies need to be installed in your project:
 
 ```bash
-npm install @dfinity/agent @dfinity/identity @dfinity/auth-client canister-manager
+npm install @dfinity/agent @dfinity/identity @dfinity/auth-client canister-manager expo-icp-frontend-helpers
 ```
 
 - `@dfinity/agent`: For Internet Computer agent functionality
 - `@dfinity/identity`: For identity and delegation management
 - `@dfinity/auth-client`: For authentication client functionality
 - `canister-manager`: For canister URL management
+- `expo-icp-frontend-helpers`: For deep link and URL parsing functionality
 
 ### Regular Dependencies
 
@@ -68,6 +69,13 @@ const params = buildParams({
   frontendCanisterId: 'rrkah-fqaaa-aaaaa-aaaaq-cai',
   expoScheme: 'myapp',
 });
+
+// The buildParams function returns:
+// {
+//   appPublicKey: PublicKey,  // The application's public key
+//   iiUri: string,           // The Internet Identity URI
+//   deepLink: string         // The deep link URL with pathname
+// }
 
 // Prepare buttons
 const { iiLoginButton, backToAppButton } = prepareButtons();

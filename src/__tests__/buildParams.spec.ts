@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { buildParams } from '../buildParams';
 import { buildAppPublicKey } from '../buildAppPublicKey';
 import { buildIIUri } from '../buildIIUri';
-import { buildDeepLink } from 'expo-icp-frontend-helpers';
+import { buildDeepLink, parseURL } from 'expo-icp-frontend-helpers';
 
 // Mock the helper functions
 vi.mock('../buildAppPublicKey', () => ({
@@ -16,12 +16,14 @@ vi.mock('../buildIIUri', () => ({
 vi.mock('expo-icp-frontend-helpers', () => ({
   buildDeepLink: vi.fn(),
   isDeepLinkType: (type: string) => type === 'icp',
+  parseURL: vi.fn(),
 }));
 
 describe('buildParams', () => {
   const mockPublicKey = { toDer: vi.fn() };
   const mockIIUri = 'https://internetcomputer.org';
-  const mockDeepLink = 'https://example.com';
+  const mockDeepLink = 'https://example.com/';
+  const mockPathname = '/test-path';
 
   const defaultParams = {
     localIPAddress: '127.0.0.1',
@@ -45,23 +47,24 @@ describe('buildParams', () => {
     (buildDeepLink as unknown as ReturnType<typeof vi.fn>).mockReturnValue(
       mockDeepLink,
     );
-
-    // Mock window.location
-    Object.defineProperty(window, 'location', {
-      value: new URL(
-        'https://example.com?pubkey=test-pubkey&deep-link-type=icp',
-      ),
-      writable: true,
+    (parseURL as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+      pathname: mockPathname,
+      searchParams: {
+        pubkey: 'test-pubkey',
+        'deep-link-type': 'icp',
+      },
     });
   });
 
   it('should successfully build params with valid query parameters', () => {
     const result = buildParams(defaultParams);
+    const expectedDeepLink = new URL(mockDeepLink);
+    expectedDeepLink.pathname = mockPathname;
 
     expect(result).toEqual({
       appPublicKey: mockPublicKey,
       iiUri: mockIIUri,
-      deepLink: mockDeepLink,
+      deepLink: expectedDeepLink.toString(),
     });
 
     expect(buildAppPublicKey).toHaveBeenCalledWith('test-pubkey');
@@ -80,9 +83,11 @@ describe('buildParams', () => {
   });
 
   it('should throw error when pubkey is missing', () => {
-    Object.defineProperty(window, 'location', {
-      value: new URL('https://example.com?deep-link-type=icp'),
-      writable: true,
+    (parseURL as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+      pathname: mockPathname,
+      searchParams: {
+        'deep-link-type': 'icp',
+      },
     });
 
     expect(() => buildParams(defaultParams)).toThrow(
@@ -91,9 +96,11 @@ describe('buildParams', () => {
   });
 
   it('should throw error when deep-link-type is missing', () => {
-    Object.defineProperty(window, 'location', {
-      value: new URL('https://example.com?pubkey=test-pubkey'),
-      writable: true,
+    (parseURL as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+      pathname: mockPathname,
+      searchParams: {
+        pubkey: 'test-pubkey',
+      },
     });
 
     expect(() => buildParams(defaultParams)).toThrow(
@@ -102,11 +109,12 @@ describe('buildParams', () => {
   });
 
   it('should throw error when deep-link-type is invalid', () => {
-    Object.defineProperty(window, 'location', {
-      value: new URL(
-        'https://example.com?pubkey=test-pubkey&deep-link-type=invalid-type',
-      ),
-      writable: true,
+    (parseURL as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+      pathname: mockPathname,
+      searchParams: {
+        pubkey: 'test-pubkey',
+        'deep-link-type': 'invalid-type',
+      },
     });
 
     expect(() => buildParams(defaultParams)).toThrow(
