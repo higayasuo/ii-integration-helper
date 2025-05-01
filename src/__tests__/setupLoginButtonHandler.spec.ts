@@ -3,7 +3,6 @@ import { setupLoginButtonHandler } from '../setupLoginButtonHandler';
 import { PublicKey } from '@dfinity/agent';
 import { prepareLogin } from '../prepareLogin';
 import { buildMiddleToAppDelegationChain } from '../buildMiddleToAppDelegationChain';
-import { determineIframe } from 'expo-icp-frontend-helpers';
 import { handleAppDelegation } from '../handleAppDelegation';
 import { renderError } from '../renderError';
 import { formatError } from '../formatError';
@@ -16,10 +15,6 @@ vi.mock('../prepareLogin', () => ({
 
 vi.mock('../buildMiddleToAppDelegationChain', () => ({
   buildMiddleToAppDelegationChain: vi.fn(),
-}));
-
-vi.mock('expo-icp-frontend-helpers', () => ({
-  determineIframe: vi.fn(),
 }));
 
 vi.mock('../handleAppDelegation', () => ({
@@ -43,6 +38,7 @@ describe('setupLoginButtonHandler', () => {
   const mockMiddleDelegationIdentity = {};
   const mockDelegationChain = {};
   const mockFormattedError = 'Formatted error message';
+  const mockExpiration = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours from now
 
   beforeEach(() => {
     // Reset all mocks
@@ -55,7 +51,7 @@ describe('setupLoginButtonHandler', () => {
     vi.resetAllMocks();
   });
 
-  it('should handle successful login in iframe (web browser)', async () => {
+  it('should handle successful login', async () => {
     // Setup mocks
     (prepareLogin as unknown as ReturnType<typeof vi.fn>).mockResolvedValue(
       vi.fn().mockResolvedValue(mockMiddleDelegationIdentity),
@@ -66,9 +62,6 @@ describe('setupLoginButtonHandler', () => {
     (formatError as unknown as ReturnType<typeof vi.fn>).mockReturnValue(
       mockFormattedError,
     );
-    (determineIframe as unknown as ReturnType<typeof vi.fn>).mockReturnValue(
-      true,
-    );
 
     // Execute
     await setupLoginButtonHandler({
@@ -77,51 +70,7 @@ describe('setupLoginButtonHandler', () => {
       deepLink: mockDeepLink,
       appPublicKey: mockAppPublicKey,
       iiUri: mockIIUri,
-    });
-
-    // Simulate click
-    mockIILoginButton.click();
-
-    // Wait for all promises to resolve
-    await vi.waitFor(() => {
-      expect(prepareLogin).toHaveBeenCalledWith({ iiUri: mockIIUri });
-      expect(buildMiddleToAppDelegationChain).toHaveBeenCalledWith({
-        middleDelegationIdentity: mockMiddleDelegationIdentity,
-        appPublicKey: mockAppPublicKey,
-        expiration: expect.any(Date),
-      });
-      expect(handleAppDelegation).toHaveBeenCalledWith({
-        deepLink: mockDeepLink,
-        delegationChain: mockDelegationChain,
-        iiLoginButton: mockIILoginButton,
-        backToAppButton: mockBackToAppButton,
-      });
-      expect(renderError).toHaveBeenCalledWith('');
-    });
-  });
-
-  it('should handle successful login in WebView (native app)', async () => {
-    // Setup mocks
-    (prepareLogin as unknown as ReturnType<typeof vi.fn>).mockResolvedValue(
-      vi.fn().mockResolvedValue(mockMiddleDelegationIdentity),
-    );
-    (
-      buildMiddleToAppDelegationChain as unknown as ReturnType<typeof vi.fn>
-    ).mockResolvedValue(mockDelegationChain);
-    (formatError as unknown as ReturnType<typeof vi.fn>).mockReturnValue(
-      mockFormattedError,
-    );
-    (determineIframe as unknown as ReturnType<typeof vi.fn>).mockReturnValue(
-      false,
-    );
-
-    // Execute
-    await setupLoginButtonHandler({
-      iiLoginButton: mockIILoginButton,
-      backToAppButton: mockBackToAppButton,
-      deepLink: mockDeepLink,
-      appPublicKey: mockAppPublicKey,
-      iiUri: mockIIUri,
+      expiration: mockExpiration,
     });
 
     // Simulate click
@@ -157,9 +106,6 @@ describe('setupLoginButtonHandler', () => {
       throw new Error('Login failed');
     });
 
-    // Mock determineIframe to return false (native app case)
-    vi.mocked(determineIframe).mockReturnValueOnce(false);
-
     // Setup the login button handler
     await setupLoginButtonHandler({
       iiLoginButton: mockIILoginButton,
@@ -167,6 +113,7 @@ describe('setupLoginButtonHandler', () => {
       deepLink: mockDeepLink,
       appPublicKey: mockAppPublicKey,
       iiUri: mockIIUri,
+      expiration: mockExpiration,
     });
 
     // Trigger the click event
