@@ -23,7 +23,6 @@ describe('buildParams', () => {
   const mockPublicKey = { toDer: vi.fn() };
   const mockIIUri = 'https://internetcomputer.org';
   const mockDeepLink = 'https://example.com/';
-  const mockPathname = '/test-path';
 
   const defaultParams = {
     localIPAddress: '127.0.0.1',
@@ -48,7 +47,6 @@ describe('buildParams', () => {
       mockDeepLink,
     );
     (parseURL as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-      pathname: mockPathname,
       searchParams: {
         pubkey: 'test-pubkey',
         'deep-link-type': 'icp',
@@ -58,13 +56,11 @@ describe('buildParams', () => {
 
   it('should successfully build params with valid query parameters', () => {
     const result = buildParams(defaultParams);
-    const expectedDeepLink = new URL(mockDeepLink);
-    expectedDeepLink.pathname = mockPathname;
 
     expect(result).toEqual({
       appPublicKey: mockPublicKey,
       iiUri: mockIIUri,
-      deepLink: expectedDeepLink.toString(),
+      deepLink: mockDeepLink,
     });
 
     expect(buildAppPublicKey).toHaveBeenCalledWith('test-pubkey');
@@ -80,11 +76,11 @@ describe('buildParams', () => {
       frontendCanisterId: defaultParams.frontendCanisterId,
       expoScheme: defaultParams.expoScheme,
     });
+    expect(parseURL).toHaveBeenCalledWith(window.location.href);
   });
 
   it('should throw error when pubkey is missing', () => {
     (parseURL as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-      pathname: mockPathname,
       searchParams: {
         'deep-link-type': 'icp',
       },
@@ -97,7 +93,6 @@ describe('buildParams', () => {
 
   it('should throw error when deep-link-type is missing', () => {
     (parseURL as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-      pathname: mockPathname,
       searchParams: {
         pubkey: 'test-pubkey',
       },
@@ -110,7 +105,6 @@ describe('buildParams', () => {
 
   it('should throw error when deep-link-type is invalid', () => {
     (parseURL as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-      pathname: mockPathname,
       searchParams: {
         pubkey: 'test-pubkey',
         'deep-link-type': 'invalid-type',

@@ -39,6 +39,8 @@ export const handleAppDelegation = ({
     backToAppButton.style.opacity = '0.7';
     backToAppButton.style.cursor = 'wait';
 
+    console.log('Redirecting to', `${deepLink}#${uriFragment}`);
+
     window.open(`${deepLink}#${uriFragment}`, '_self');
   });
 };

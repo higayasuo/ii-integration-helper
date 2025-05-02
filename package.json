@@ -59,6 +59,6 @@
     "@dfinity/auth-client": "*",
     "@dfinity/identity": "*",
     "canister-manager": "^0.1.7",
-    "expo-icp-frontend-helpers": "^0.1.5"
+    "expo-icp-frontend-helpers": "^0.1.8"
   }
 }

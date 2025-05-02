@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { handleAppDelegation } from '../handleAppDelegation';
 import { buildURIFragment } from '../buildURIFragment';
 import { DelegationChain } from '@dfinity/identity';
@@ -14,7 +14,8 @@ describe('handleAppDelegation', () => {
   const mockDeepLink = 'https://example.com';
   const mockIILoginButton = document.createElement('button');
   const mockBackToAppButton = document.createElement('button');
-  const mockOpen = vi.fn();
+  const originalLocation = window.location;
+  const originalConsole = console.log;
 
   beforeEach(() => {
     // Reset all mocks before each test
@@ -25,11 +26,22 @@ describe('handleAppDelegation', () => {
       mockUriFragment,
     );
 
-    // Mock window.open
-    Object.defineProperty(window, 'open', {
-      value: mockOpen,
-      writable: true,
-    });
+    // Mock window.location
+    delete (window as any).location;
+    window.location = {
+      ...originalLocation,
+      href: '',
+      hash: '',
+    };
+
+    // Mock console.log
+    console.log = vi.fn();
+  });
+
+  afterEach(() => {
+    // Restore window.location and console.log
+    window.location = originalLocation;
+    console.log = originalConsole;
   });
 
   it('should set up UI elements and add click event listener for app delegation', () => {
@@ -56,10 +68,10 @@ describe('handleAppDelegation', () => {
     expect(mockBackToAppButton.style.opacity).toBe('0.7');
     expect(mockBackToAppButton.style.cursor).toBe('wait');
 
-    // Verify window.open was called with correct parameters
-    expect(mockOpen).toHaveBeenCalledWith(
+    // Verify console.log was called with correct parameters
+    expect(console.log).toHaveBeenCalledWith(
+      'Redirecting to',
       `${mockDeepLink}#${mockUriFragment}`,
-      '_self',
     );
   });
 });

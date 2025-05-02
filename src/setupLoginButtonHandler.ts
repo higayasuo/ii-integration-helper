@@ -20,8 +20,8 @@ type SetupLoginButtonHandlerParams = {
   appPublicKey: PublicKey;
   /** The Internet Identity URI */
   iiUri: string;
-  /** The expiration date for the delegation chain */
-  expiration: Date;
+  /** Time to live in milliseconds from the current time */
+  ttlMs: number;
 };
 
 /**
@@ -34,7 +34,7 @@ export const setupLoginButtonHandler = async ({
   deepLink,
   appPublicKey,
   iiUri,
-  expiration,
+  ttlMs,
 }: SetupLoginButtonHandlerParams): Promise<void> => {
   // Prepare login outside of the event handler
   const login = await prepareLogin({
@@ -51,7 +51,7 @@ export const setupLoginButtonHandler = async ({
       const delegationChain = await buildMiddleToAppDelegationChain({
         middleDelegationIdentity,
         appPublicKey,
-        expiration,
+        expiration: new Date(Date.now() + ttlMs),
       });
 
       handleAppDelegation({

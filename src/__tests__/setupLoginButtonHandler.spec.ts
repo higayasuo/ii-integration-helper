@@ -38,7 +38,7 @@ describe('setupLoginButtonHandler', () => {
   const mockMiddleDelegationIdentity = {};
   const mockDelegationChain = {};
   const mockFormattedError = 'Formatted error message';
-  const mockExpiration = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours from now
+  const mockTtlMs = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 
   beforeEach(() => {
     // Reset all mocks
@@ -70,7 +70,7 @@ describe('setupLoginButtonHandler', () => {
       deepLink: mockDeepLink,
       appPublicKey: mockAppPublicKey,
       iiUri: mockIIUri,
-      expiration: mockExpiration,
+      ttlMs: mockTtlMs,
     });
 
     // Simulate click
@@ -113,7 +113,7 @@ describe('setupLoginButtonHandler', () => {
       deepLink: mockDeepLink,
       appPublicKey: mockAppPublicKey,
       iiUri: mockIIUri,
-      expiration: mockExpiration,
+      ttlMs: mockTtlMs,
     });
 
     // Trigger the click event

@@ -66,7 +66,7 @@ export const buildParams = ({
   frontendCanisterId,
   expoScheme,
 }: BuildParamsParams): BuildParamsResult => {
-  const { pathname, searchParams } = parseURL<SearchParams>();
+  const { searchParams } = parseURL<SearchParams>(window.location.href);
   const pubkey = searchParams.pubkey;
   const deepLinkType = searchParams['deep-link-type'] as DeepLinkType;
 
@@ -91,12 +91,10 @@ export const buildParams = ({
     frontendCanisterId,
     expoScheme,
   });
-  const deepLinkURL = new URL(deepLink);
-  deepLinkURL.pathname = pathname;
 
   return {
     appPublicKey,
     iiUri,
-    deepLink: deepLinkURL.toString(),
+    deepLink,
   };
 };
