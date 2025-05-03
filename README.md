@@ -49,64 +49,61 @@ The following dependencies are included in the package:
 - Public key handling
 - Error formatting and rendering
 - Button setup and event handling
+- Deep link and URL parsing functionality
 
 ## Usage
 
-### Basic Usage
-
 ```typescript
 import {
+  renderError,
+  formatError,
   buildParams,
-  setupLoginButtonHandler,
   prepareButtons,
+  setupLoginButtonHandler,
 } from 'ii-integration-helpers';
-
-// Build parameters for II integration
-const params = buildParams({
-  localIPAddress: '127.0.0.1',
-  dfxNetwork: 'local',
-  internetIdentityCanisterId: 'rdmx6-jaaaa-aaaaa-aaadq-cai',
-  frontendCanisterId: 'rrkah-fqaaa-aaaaa-aaaaq-cai',
-  expoScheme: 'myapp',
-});
-
-// The buildParams function returns:
-// {
-//   appPublicKey: PublicKey,  // The application's public key
-//   iiUri: string,           // The Internet Identity URI
-//   deepLink: string         // The deep link URL with pathname
-// }
-
-// Prepare buttons
-const { iiLoginButton, backToAppButton } = prepareButtons();
-
-// Setup login button handler
-await setupLoginButtonHandler({
-  iiLoginButton,
-  backToAppButton,
-  deepLink: params.deepLink,
-  appPublicKey: params.appPublicKey,
-  iiUri: params.iiUri,
-});
-```
-
-### Delegation Chain
-
-```typescript
+import { ERROR_MESSAGES } from './constants';
 import {
-  buildMiddleToAppDelegationChain,
-  buildURIFragment,
-} from 'ii-integration-helpers';
+  LOCAL_IP_ADDRESS,
+  DFX_NETWORK,
+  CANISTER_ID_INTERNET_IDENTITY,
+  CANISTER_ID_FRONTEND,
+  EXPO_SCHEME,
+} from './env.generated';
 
-// Build a delegation chain
-const delegationChain = await buildMiddleToAppDelegationChain({
-  middleDelegationIdentity,
-  appPublicKey,
-  expiration: new Date(Date.now() + 1000 * 60 * 15), // 15 minutes
+const main = async (): Promise<void> => {
+  try {
+    // Build parameters for II integration
+    const { deepLink, appPublicKey, iiUri } = buildParams({
+      localIPAddress: LOCAL_IP_ADDRESS,
+      dfxNetwork: DFX_NETWORK,
+      internetIdentityCanisterId: CANISTER_ID_INTERNET_IDENTITY,
+      frontendCanisterId: CANISTER_ID_FRONTEND,
+      expoScheme: EXPO_SCHEME,
+    });
+    console.log('deepLink', deepLink);
+    console.log('iiUri', iiUri);
+
+    // Prepare buttons
+    const { iiLoginButton, backToAppButton } = prepareButtons();
+
+    // Setup login button handler
+    await setupLoginButtonHandler({
+      iiLoginButton,
+      backToAppButton,
+      deepLink,
+      appPublicKey,
+      iiUri,
+      ttlMs: 1000 * 60 * 15, // 15 minutes until authentication expires
+    });
+  } catch (error) {
+    renderError(formatError(ERROR_MESSAGES.INITIALIZATION, error));
+  }
+};
+
+// Initialize when DOM is loaded
+window.addEventListener('DOMContentLoaded', () => {
+  main();
 });
-
-// Build a URI fragment for the delegation
-const uriFragment = buildURIFragment(delegationChain);
 ```
 
 ## API Reference
@@ -124,6 +121,8 @@ const uriFragment = buildURIFragment(delegationChain);
 
 - `prepareLogin`: Prepares the login process and returns a function to get delegation identity
 - `setupLoginButtonHandler`: Sets up the login button handler for II authentication
+  - Parameters:
+    - `ttlMs`: number - Time to live in milliseconds until authentication expires
 
 ### Delegation Return Functions
 
