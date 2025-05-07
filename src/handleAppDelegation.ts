@@ -9,6 +9,8 @@ export type HandleAppDelegationParams = {
   deepLink: string;
   /** The delegation chain to use */
   delegationChain: DelegationChain;
+  /** The session ID to include in the URI fragment */
+  sessionId: string;
   /** The II login button element */
   iiLoginButton: HTMLElement;
   /** The back to app button element */
@@ -23,11 +25,14 @@ export type HandleAppDelegationParams = {
 export const handleAppDelegation = ({
   deepLink,
   delegationChain,
+  sessionId,
   iiLoginButton,
   backToAppButton,
 }: HandleAppDelegationParams): void => {
-  const uriFragment = buildURIFragment(delegationChain);
-
+  const uriFragment = buildURIFragment({
+    delegationChain,
+    sessionId,
+  });
   // Hide the II login button and show the Back to App button
   iiLoginButton.style.display = 'none';
   backToAppButton.style.display = 'block';
@@ -40,7 +45,7 @@ export const handleAppDelegation = ({
     backToAppButton.style.cursor = 'wait';
 
     console.log('Redirecting to', `${deepLink}#${uriFragment}`);
-
     window.open(`${deepLink}#${uriFragment}`, '_self');
+    // window.open(`${deepLink}`, '_self');
   });
 };

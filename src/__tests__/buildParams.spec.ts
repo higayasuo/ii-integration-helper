@@ -23,6 +23,7 @@ describe('buildParams', () => {
   const mockPublicKey = { toDer: vi.fn() };
   const mockIIUri = 'https://internetcomputer.org';
   const mockDeepLink = 'https://example.com/';
+  const mockSessionId = 'test-session-id';
 
   const defaultParams = {
     localIPAddress: '127.0.0.1',
@@ -50,6 +51,7 @@ describe('buildParams', () => {
       searchParams: {
         pubkey: 'test-pubkey',
         'deep-link-type': 'icp',
+        'session-id': mockSessionId,
       },
     });
   });
@@ -61,6 +63,7 @@ describe('buildParams', () => {
       appPublicKey: mockPublicKey,
       iiUri: mockIIUri,
       deepLink: mockDeepLink,
+      sessionId: mockSessionId,
     });
 
     expect(buildAppPublicKey).toHaveBeenCalledWith('test-pubkey');
@@ -83,11 +86,12 @@ describe('buildParams', () => {
     (parseURL as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
       searchParams: {
         'deep-link-type': 'icp',
+        'session-id': mockSessionId,
       },
     });
 
     expect(() => buildParams(defaultParams)).toThrow(
-      'Missing pubkey or deep-link-type in query string',
+      'Missing pubkey, deep-link-type or session-id in query string',
     );
   });
 
@@ -95,11 +99,25 @@ describe('buildParams', () => {
     (parseURL as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
       searchParams: {
         pubkey: 'test-pubkey',
+        'session-id': mockSessionId,
       },
     });
 
     expect(() => buildParams(defaultParams)).toThrow(
-      'Missing pubkey or deep-link-type in query string',
+      'Missing pubkey, deep-link-type or session-id in query string',
+    );
+  });
+
+  it('should throw error when session-id is missing', () => {
+    (parseURL as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+      searchParams: {
+        pubkey: 'test-pubkey',
+        'deep-link-type': 'icp',
+      },
+    });
+
+    expect(() => buildParams(defaultParams)).toThrow(
+      'Missing pubkey, deep-link-type or session-id in query string',
     );
   });
 
@@ -108,6 +126,7 @@ describe('buildParams', () => {
       searchParams: {
         pubkey: 'test-pubkey',
         'deep-link-type': 'invalid-type',
+        'session-id': mockSessionId,
       },
     });
 

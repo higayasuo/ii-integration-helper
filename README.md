@@ -73,7 +73,7 @@ import {
 const main = async (): Promise<void> => {
   try {
     // Build parameters for II integration
-    const { deepLink, appPublicKey, iiUri } = buildParams({
+    const { deepLink, appPublicKey, iiUri, sessionId } = buildParams({
       localIPAddress: LOCAL_IP_ADDRESS,
       dfxNetwork: DFX_NETWORK,
       internetIdentityCanisterId: CANISTER_ID_INTERNET_IDENTITY,
@@ -91,6 +91,7 @@ const main = async (): Promise<void> => {
       iiLoginButton,
       backToAppButton,
       deepLink,
+      sessionId,
       appPublicKey,
       iiUri,
       ttlMs: 1000 * 60 * 15, // 15 minutes until authentication expires

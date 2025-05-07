@@ -45,11 +45,13 @@ export interface BuildParamsResult {
   appPublicKey: PublicKey;
   iiUri: string;
   deepLink: string;
+  sessionId: string;
 }
 
 type SearchParams = {
   pubkey?: string;
   'deep-link-type'?: string;
+  'session-id'?: string;
 };
 
 /**
@@ -69,9 +71,11 @@ export const buildParams = ({
   const { searchParams } = parseURL<SearchParams>(window.location.href);
   const pubkey = searchParams.pubkey;
   const deepLinkType = searchParams['deep-link-type'] as DeepLinkType;
-
-  if (!pubkey || !deepLinkType) {
-    throw new Error('Missing pubkey or deep-link-type in query string');
+  const sessionId = searchParams['session-id'];
+  if (!pubkey || !deepLinkType || !sessionId) {
+    throw new Error(
+      'Missing pubkey, deep-link-type or session-id in query string',
+    );
   }
 
   if (!isDeepLinkType(deepLinkType)) {
@@ -96,5 +100,6 @@ export const buildParams = ({
     appPublicKey,
     iiUri,
     deepLink,
+    sessionId,
   };
 };

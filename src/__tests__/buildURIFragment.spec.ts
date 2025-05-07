@@ -15,6 +15,7 @@ describe('buildURIFragment', () => {
 
   const mockDelegationString = 'mock-delegation-string';
   const mockEncodedDelegation = 'mock-encoded-delegation';
+  const mockSessionId = 'test-session-id';
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -26,13 +27,18 @@ describe('buildURIFragment', () => {
     );
   });
 
-  it('should build a URI fragment with the encoded delegation string', () => {
-    const result = buildURIFragment(mockDelegationChain);
+  it('should build a URI fragment with the encoded delegation string and session ID', () => {
+    const result = buildURIFragment({
+      delegationChain: mockDelegationChain,
+      sessionId: mockSessionId,
+    });
 
     expect(buildDelegationString).toHaveBeenCalledWith(mockDelegationChain);
     expect(global.encodeURIComponent).toHaveBeenCalledWith(
       mockDelegationString,
     );
-    expect(result).toBe(`delegation=${mockEncodedDelegation}`);
+    expect(result).toBe(
+      `delegation=${mockEncodedDelegation}&session-id=${mockSessionId}`,
+    );
   });
 });

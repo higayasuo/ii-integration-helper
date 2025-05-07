@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.3] - 2025-05-07
+
+### Added
+
+- Added `sessionId` parameter to support session tracking:
+  - Added to `buildParams` to extract session ID from URL parameters
+  - Added to `handleAppDelegation` for delegation chain handling
+  - Added to `buildURIFragment` to include session ID in URI fragment
+  - Added to `setupLoginButtonHandler` for complete session tracking flow
+
 ## [0.1.2] - 2025-05-03
 
 ### Added

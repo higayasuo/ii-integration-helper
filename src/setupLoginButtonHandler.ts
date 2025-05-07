@@ -16,6 +16,8 @@ type SetupLoginButtonHandlerParams = {
   backToAppButton: HTMLButtonElement;
   /** The deep link URL for the app */
   deepLink: string;
+  /** The session ID to include in the URI fragment */
+  sessionId: string;
   /** The public key for the app */
   appPublicKey: PublicKey;
   /** The Internet Identity URI */
@@ -32,6 +34,7 @@ export const setupLoginButtonHandler = async ({
   iiLoginButton,
   backToAppButton,
   deepLink,
+  sessionId,
   appPublicKey,
   iiUri,
   ttlMs,
@@ -56,6 +59,7 @@ export const setupLoginButtonHandler = async ({
 
       handleAppDelegation({
         deepLink,
+        sessionId,
         delegationChain,
         iiLoginButton,
         backToAppButton,

@@ -33,6 +33,7 @@ describe('setupLoginButtonHandler', () => {
   const mockIILoginButton = document.createElement('button');
   const mockBackToAppButton = document.createElement('button');
   const mockDeepLink = 'https://example.com';
+  const mockSessionId = 'test-session-id';
   const mockAppPublicKey = {} as PublicKey;
   const mockIIUri = 'https://identity.ic0.app';
   const mockMiddleDelegationIdentity = {};
@@ -68,6 +69,7 @@ describe('setupLoginButtonHandler', () => {
       iiLoginButton: mockIILoginButton,
       backToAppButton: mockBackToAppButton,
       deepLink: mockDeepLink,
+      sessionId: mockSessionId,
       appPublicKey: mockAppPublicKey,
       iiUri: mockIIUri,
       ttlMs: mockTtlMs,
@@ -86,6 +88,7 @@ describe('setupLoginButtonHandler', () => {
       });
       expect(handleAppDelegation).toHaveBeenCalledWith({
         deepLink: mockDeepLink,
+        sessionId: mockSessionId,
         delegationChain: mockDelegationChain,
         iiLoginButton: mockIILoginButton,
         backToAppButton: mockBackToAppButton,
@@ -98,6 +101,7 @@ describe('setupLoginButtonHandler', () => {
     const mockIILoginButton = document.createElement('button');
     const mockBackToAppButton = document.createElement('button');
     const mockDeepLink = 'app://login';
+    const mockSessionId = 'test-session-id';
     const mockAppPublicKey = {} as PublicKey;
     const mockIIUri = 'https://identity.ic0.app';
 
@@ -111,6 +115,7 @@ describe('setupLoginButtonHandler', () => {
       iiLoginButton: mockIILoginButton,
       backToAppButton: mockBackToAppButton,
       deepLink: mockDeepLink,
+      sessionId: mockSessionId,
       appPublicKey: mockAppPublicKey,
       iiUri: mockIIUri,
       ttlMs: mockTtlMs,
