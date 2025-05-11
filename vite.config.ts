@@ -24,6 +24,7 @@ export default defineConfig({
         '@dfinity/auth-client',
         'canister-manager',
         'expo-icp-frontend-helpers',
+        'expo-icp-app-connect-helpers',
       ],
     },
   },

@@ -1,5 +1,6 @@
 import { DelegationChain } from '@dfinity/identity';
 import { buildDelegationString } from './buildDelegationString';
+import { updateParams } from 'expo-icp-frontend-helpers';
 
 type BuildURIFragmentParams = {
   /** The delegation chain to encode */
@@ -20,7 +21,11 @@ export const buildURIFragment = ({
   delegationChain,
   sessionId,
 }: BuildURIFragmentParams): string => {
-  const delegationString = buildDelegationString(delegationChain);
-  const encodedDelegation = encodeURIComponent(delegationString);
-  return `delegation=${encodedDelegation}&session-id=${sessionId}`;
+  const delegation = buildDelegationString(delegationChain);
+  const hashParams = new URLSearchParams();
+  updateParams(hashParams, {
+    delegation,
+    sessionId,
+  });
+  return hashParams.toString();
 };

@@ -2,12 +2,11 @@ import { PublicKey } from '@dfinity/agent';
 import { buildAppPublicKey } from './buildAppPublicKey';
 import { buildIIUri } from './buildIIUri';
 import {
-  DeepLinkType,
   isDeepLinkType,
   buildDeepLink,
-  parseURL,
+  parseParams,
 } from 'expo-icp-frontend-helpers';
-
+import { DeepLinkConnectionParams } from 'expo-icp-app-connect-helpers';
 /**
  * Parameters required to build the parameters for the application.
  */
@@ -48,10 +47,8 @@ export interface BuildParamsResult {
   sessionId: string;
 }
 
-type SearchParams = {
-  pubkey?: string;
-  'deep-link-type'?: string;
-  'session-id'?: string;
+type SearchParams = Required<DeepLinkConnectionParams> & {
+  pubkey: string;
 };
 
 /**
@@ -68,15 +65,12 @@ export const buildParams = ({
   frontendCanisterId,
   expoScheme,
 }: BuildParamsParams): BuildParamsResult => {
-  const { searchParams } = parseURL<SearchParams>(window.location.href);
-  const pubkey = searchParams.pubkey;
-  const deepLinkType = searchParams['deep-link-type'] as DeepLinkType;
-  const sessionId = searchParams['session-id'];
-  if (!pubkey || !deepLinkType || !sessionId) {
-    throw new Error(
-      'Missing pubkey, deep-link-type or session-id in query string',
-    );
-  }
+  const { pubkey, deepLinkType, sessionId } = parseParams<SearchParams>(
+    window.location.search,
+    'pubkey',
+    'deepLinkType',
+    'sessionId',
+  );
 
   if (!isDeepLinkType(deepLinkType)) {
     throw new Error(`Invalid deep-link-type: ${deepLinkType}`);
