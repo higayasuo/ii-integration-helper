@@ -26,13 +26,14 @@ npm install ii-integration-helpers
 These dependencies need to be installed in your project:
 
 ```bash
-npm install @dfinity/agent @dfinity/identity @dfinity/auth-client canister-manager expo-icp-frontend-helpers
+npm install @dfinity/agent @dfinity/identity @dfinity/auth-client canister-manager expo-icp-app-connect-helpers expo-icp-frontend-helpers
 ```
 
 - `@dfinity/agent`: For Internet Computer agent functionality
 - `@dfinity/identity`: For identity and delegation management
 - `@dfinity/auth-client`: For authentication client functionality
 - `canister-manager`: For canister URL management
+- `expo-icp-app-connect-helpers`: For app connection functionality
 - `expo-icp-frontend-helpers`: For deep link and URL parsing functionality
 
 ### Regular Dependencies

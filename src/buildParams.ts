@@ -1,12 +1,12 @@
 import { PublicKey } from '@dfinity/agent';
 import { buildAppPublicKey } from './buildAppPublicKey';
 import { buildIIUri } from './buildIIUri';
+import { buildDeepLink } from 'expo-icp-frontend-helpers';
 import {
-  isDeepLinkType,
-  buildDeepLink,
-  parseParams,
-} from 'expo-icp-frontend-helpers';
-import { DeepLinkConnectionParams } from 'expo-icp-app-connect-helpers';
+  DeepLinkConnectionParams,
+  parseDeepLinkConnectionParams,
+} from 'expo-icp-app-connect-helpers';
+
 /**
  * Parameters required to build the parameters for the application.
  */
@@ -65,16 +65,11 @@ export const buildParams = ({
   frontendCanisterId,
   expoScheme,
 }: BuildParamsParams): BuildParamsResult => {
-  const { pubkey, deepLinkType, sessionId } = parseParams<SearchParams>(
-    window.location.search,
-    'pubkey',
-    'deepLinkType',
-    'sessionId',
-  );
-
-  if (!isDeepLinkType(deepLinkType)) {
-    throw new Error(`Invalid deep-link-type: ${deepLinkType}`);
-  }
+  const { pubkey, deepLinkType, sessionId } =
+    parseDeepLinkConnectionParams<SearchParams>(
+      window.location.search,
+      'pubkey',
+    );
 
   const appPublicKey = buildAppPublicKey(pubkey);
   const iiUri = buildIIUri({
