@@ -5,10 +5,10 @@ import { AuthClient } from '@dfinity/auth-client';
  * Parameters required for preparing the login process.
  *
  * @typedef {Object} PrepareLoginParams
- * @property {string} iiUri - The Internet Identity URI.
+ * @property {string} internetIdentityURL - The Internet Identity URL.
  */
 type PrepareLoginParams = {
-  iiUri: string;
+  internetIdentityURL: URL;
 };
 
 /**
@@ -19,7 +19,7 @@ type PrepareLoginParams = {
  * @returns {Promise<() => Promise<DelegationIdentity>>} A promise that resolves to a function which handles the login process and returns the delegation identity.
  */
 export const prepareLogin = async ({
-  iiUri,
+  internetIdentityURL,
 }: PrepareLoginParams): Promise<() => Promise<DelegationIdentity>> => {
   const identity = await ECDSAKeyIdentity.generate();
   const authClient = await AuthClient.create({ identity });
@@ -27,7 +27,7 @@ export const prepareLogin = async ({
   return async () => {
     return new Promise<DelegationIdentity>((resolve, reject) => {
       authClient.login({
-        identityProvider: iiUri,
+        identityProvider: internetIdentityURL.toString(),
         onSuccess: () => {
           const middleDelegationIdentity =
             authClient.getIdentity() as DelegationIdentity;

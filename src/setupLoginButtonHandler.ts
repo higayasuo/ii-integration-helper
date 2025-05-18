@@ -15,13 +15,13 @@ type SetupLoginButtonHandlerParams = {
   /** The back to app button element */
   backToAppButton: HTMLButtonElement;
   /** The deep link URL for the app */
-  deepLink: string;
+  deepLink: URL;
   /** The session ID to include in the URI fragment */
   sessionId: string;
   /** The public key for the app */
   appPublicKey: PublicKey;
-  /** The Internet Identity URI */
-  iiUri: string;
+  /** The Internet Identity URL */
+  internetIdentityURL: URL;
   /** Time to live in milliseconds from the current time */
   ttlMs: number;
 };
@@ -36,12 +36,12 @@ export const setupLoginButtonHandler = async ({
   deepLink,
   sessionId,
   appPublicKey,
-  iiUri,
+  internetIdentityURL,
   ttlMs,
 }: SetupLoginButtonHandlerParams): Promise<void> => {
   // Prepare login outside of the event handler
   const login = await prepareLogin({
-    iiUri,
+    internetIdentityURL,
   });
 
   iiLoginButton.addEventListener('click', async (e) => {

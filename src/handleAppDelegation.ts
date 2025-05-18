@@ -6,7 +6,7 @@ import { buildURIFragment } from './buildURIFragment';
  */
 export type HandleAppDelegationParams = {
   /** The deep link to redirect to after processing the delegation */
-  deepLink: string;
+  deepLink: URL;
   /** The delegation chain to use */
   delegationChain: DelegationChain;
   /** The session ID to include in the URI fragment */
@@ -44,8 +44,6 @@ export const handleAppDelegation = ({
     backToAppButton.style.opacity = '0.7';
     backToAppButton.style.cursor = 'wait';
 
-    console.log('Redirecting to', `${deepLink}#${uriFragment}`);
-    window.open(`${deepLink}#${uriFragment}`, '_self');
-    // window.open(`${deepLink}`, '_self');
+    window.open(`${deepLink.toString()}#${uriFragment}`, '_self');
   });
 };

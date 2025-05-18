@@ -32,10 +32,10 @@ vi.mock('../formatError', () => ({
 describe('setupLoginButtonHandler', () => {
   const mockIILoginButton = document.createElement('button');
   const mockBackToAppButton = document.createElement('button');
-  const mockDeepLink = 'https://example.com';
+  const mockDeepLink = new URL('https://example.com');
   const mockSessionId = 'test-session-id';
   const mockAppPublicKey = {} as PublicKey;
-  const mockIIUri = 'https://identity.ic0.app';
+  const mockInternetIdentityURL = new URL('https://identity.ic0.app');
   const mockMiddleDelegationIdentity = {};
   const mockDelegationChain = {};
   const mockFormattedError = 'Formatted error message';
@@ -71,7 +71,7 @@ describe('setupLoginButtonHandler', () => {
       deepLink: mockDeepLink,
       sessionId: mockSessionId,
       appPublicKey: mockAppPublicKey,
-      iiUri: mockIIUri,
+      internetIdentityURL: mockInternetIdentityURL,
       ttlMs: mockTtlMs,
     });
 
@@ -80,7 +80,9 @@ describe('setupLoginButtonHandler', () => {
 
     // Wait for all promises to resolve
     await vi.waitFor(() => {
-      expect(prepareLogin).toHaveBeenCalledWith({ iiUri: mockIIUri });
+      expect(prepareLogin).toHaveBeenCalledWith({
+        internetIdentityURL: mockInternetIdentityURL,
+      });
       expect(buildMiddleToAppDelegationChain).toHaveBeenCalledWith({
         middleDelegationIdentity: mockMiddleDelegationIdentity,
         appPublicKey: mockAppPublicKey,
@@ -100,10 +102,10 @@ describe('setupLoginButtonHandler', () => {
   it('should handle login error in click handler', async () => {
     const mockIILoginButton = document.createElement('button');
     const mockBackToAppButton = document.createElement('button');
-    const mockDeepLink = 'app://login';
+    const mockDeepLink = new URL('app://login');
     const mockSessionId = 'test-session-id';
     const mockAppPublicKey = {} as PublicKey;
-    const mockIIUri = 'https://identity.ic0.app';
+    const mockInternetIdentityURL = new URL('https://identity.ic0.app');
 
     // Mock prepareLogin to return a function that rejects
     vi.mocked(prepareLogin).mockResolvedValueOnce(async () => {
@@ -117,7 +119,7 @@ describe('setupLoginButtonHandler', () => {
       deepLink: mockDeepLink,
       sessionId: mockSessionId,
       appPublicKey: mockAppPublicKey,
-      iiUri: mockIIUri,
+      internetIdentityURL: mockInternetIdentityURL,
       ttlMs: mockTtlMs,
     });
 

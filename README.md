@@ -74,15 +74,14 @@ import {
 const main = async (): Promise<void> => {
   try {
     // Build parameters for II integration
-    const { deepLink, appPublicKey, iiUri, sessionId } = buildParams({
-      localIPAddress: LOCAL_IP_ADDRESS,
-      dfxNetwork: DFX_NETWORK,
-      internetIdentityCanisterId: CANISTER_ID_INTERNET_IDENTITY,
-      frontendCanisterId: CANISTER_ID_FRONTEND,
-      expoScheme: EXPO_SCHEME,
-    });
-    console.log('deepLink', deepLink);
-    console.log('iiUri', iiUri);
+    const { deepLink, appPublicKey, internetIdentityURL, sessionId } =
+      buildParams({
+        localIPAddress: LOCAL_IP_ADDRESS,
+        dfxNetwork: DFX_NETWORK,
+        internetIdentityCanisterId: CANISTER_ID_INTERNET_IDENTITY,
+        frontendCanisterId: CANISTER_ID_FRONTEND,
+        expoScheme: EXPO_SCHEME,
+      });
 
     // Prepare buttons
     const { iiLoginButton, backToAppButton } = prepareButtons();
@@ -94,7 +93,7 @@ const main = async (): Promise<void> => {
       deepLink,
       sessionId,
       appPublicKey,
-      iiUri,
+      internetIdentityURL,
       ttlMs: 1000 * 60 * 15, // 15 minutes until authentication expires
     });
   } catch (error) {
@@ -113,7 +112,6 @@ window.addEventListener('DOMContentLoaded', () => {
 ### Core Functions
 
 - `buildParams`: Builds parameters for II integration
-- `buildIIUri`: Builds the Internet Identity URI
 - `buildAppPublicKey`: Converts a hex string to a PublicKey
 - `buildDelegationString`: Converts a DelegationChain to a string
 - `buildMiddleToAppDelegationChain`: Creates a delegation chain

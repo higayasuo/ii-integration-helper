@@ -1,18 +1,15 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { AuthClient } from '@dfinity/auth-client';
-import { DelegationIdentity } from '@dfinity/identity';
-import { PublicKey } from '@dfinity/agent';
+import { DelegationIdentity, ECDSAKeyIdentity } from '@dfinity/identity';
 import { prepareLogin } from '../prepareLogin';
 
 vi.mock('@dfinity/auth-client');
 vi.mock('@dfinity/identity');
 
 describe('prepareLogin', () => {
-  const mockPublicKey = {} as PublicKey;
+  const mockInternetIdentityURL = new URL('https://test.ic0.app');
   const mockArgs = {
-    appPublicKey: mockPublicKey,
-    iiUri: 'https://test.ic0.app',
-    deepLink: 'https://test.app/callback',
+    internetIdentityURL: mockInternetIdentityURL,
   };
 
   const mockAuthClient = {
@@ -25,6 +22,9 @@ describe('prepareLogin', () => {
     (
       AuthClient.create as unknown as ReturnType<typeof vi.fn>
     ).mockResolvedValue(mockAuthClient);
+    (
+      ECDSAKeyIdentity.generate as unknown as ReturnType<typeof vi.fn>
+    ).mockResolvedValue({});
   });
 
   it('should return a function that handles login process', async () => {
@@ -43,6 +43,11 @@ describe('prepareLogin', () => {
     const result = await loginFunction();
 
     expect(result).toBe(mockDelegationIdentity);
+    expect(mockAuthClient.login).toHaveBeenCalledWith({
+      identityProvider: mockInternetIdentityURL.toString(),
+      onSuccess: expect.any(Function),
+      onError: expect.any(Function),
+    });
   });
 
   it('should throw error on login failure', async () => {

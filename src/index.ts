@@ -1,6 +1,5 @@
 export * from './buildAppPublicKey';
 export * from './buildDelegationString';
-export * from './buildIIUri';
 export * from './buildMiddleToAppDelegationChain';
 export * from './buildParams';
 export * from './buildURIFragment';

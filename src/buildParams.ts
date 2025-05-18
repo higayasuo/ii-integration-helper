@@ -1,10 +1,10 @@
 import { PublicKey } from '@dfinity/agent';
 import { buildAppPublicKey } from './buildAppPublicKey';
-import { buildIIUri } from './buildIIUri';
 import { buildDeepLink } from 'expo-icp-frontend-helpers';
 import {
   DeepLinkConnectionParams,
   parseDeepLinkConnectionParams,
+  buildInternetIdentityURL,
 } from 'expo-icp-app-connect-helpers';
 
 /**
@@ -42,8 +42,8 @@ type BuildParamsParams = {
  */
 export interface BuildParamsResult {
   appPublicKey: PublicKey;
-  iiUri: string;
-  deepLink: string;
+  internetIdentityURL: URL;
+  deepLink: URL;
   sessionId: string;
 }
 
@@ -65,17 +65,17 @@ export const buildParams = ({
   frontendCanisterId,
   expoScheme,
 }: BuildParamsParams): BuildParamsResult => {
-  const { pubkey, deepLinkType, sessionId } =
+  const { pubkey, deepLinkType, sessionId, pathname } =
     parseDeepLinkConnectionParams<SearchParams>(
       window.location.search,
       'pubkey',
     );
 
   const appPublicKey = buildAppPublicKey(pubkey);
-  const iiUri = buildIIUri({
+  const internetIdentityURL = buildInternetIdentityURL({
     localIPAddress,
     dfxNetwork,
-    internetIdentityCanisterId,
+    targetCanisterId: internetIdentityCanisterId,
   });
   const deepLink = buildDeepLink({
     deepLinkType,
@@ -83,11 +83,12 @@ export const buildParams = ({
     dfxNetwork,
     frontendCanisterId,
     expoScheme,
+    pathname,
   });
 
   return {
     appPublicKey,
-    iiUri,
+    internetIdentityURL,
     deepLink,
     sessionId,
   };
